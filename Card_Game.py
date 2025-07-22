@@ -8,7 +8,7 @@ from Charaters_Card_Game import wurm_stats,ant_stats
 
 
 shop_refresh_price = 5
-tss = 1.5                               # wartezeit zwischen nachricht und hauptmenu
+                           # wartezeit zwischen nachricht und hauptmenu
 money = 50000
 stage = 1
 Inventory = ["Wurm", "Ant"]
@@ -59,7 +59,7 @@ def shop():
     ]
     for line in liness:
         print(line)
-        time.sleep(0.03)
+        
     shop_packs = input("UP, BP,CP, LUP, RS or Main Menu?: ").lower()
     if shop_packs == "m":
         main_menu()
@@ -72,15 +72,15 @@ def shop():
                 if upgrade in pet_levels:
                     pet_levels[upgrade] += 1
                     print(f"you have upgraded {upgrade} to Level {pet_levels[upgrade]}")
-                wait = input()
+                
                 shop()
             else:
                 print("not enough Money")
-                time.sleep(tss)
+                
                 shop()
         else:
             print("not on Stock")
-            time.sleep(tss)
+            
             
         shop()
 
@@ -92,11 +92,11 @@ def shop():
                 shop()
             else:
                 print("not enough Money")
-                time.sleep(2)
+                
                 shop()
         else:
             print("not on Stock")
-            time.sleep(tss)
+            
             
         shop()
     elif shop_packs == "cp":  
@@ -107,11 +107,11 @@ def shop():
                 shop()
             else:
                 print("not enough Money")
-                time.sleep(tss)
+                
                 shop()
         else:
             print("not on Stock")
-            time.sleep(tss)
+            
         shop()
         
     elif shop_packs == "lup":
@@ -127,11 +127,11 @@ def shop():
                 shop()
             else:
                 print("not enough Money")
-                time.sleep(tss)
+                
                 shop()
         else:
             print("not on Stock")
-            time.sleep(tss)
+            
             
         shop()
     elif shop_packs == "rs":
@@ -149,7 +149,7 @@ def shop():
     
         else:
             print("not enough money")
-            time.sleep(tss)
+            
             shop()
     elif shop_packs == "e":
         exit()
@@ -176,7 +176,7 @@ def main_menu():
     
     for line in lines:
         print(line)
-        time.sleep(0.02)  
+         
     
     user_Request = input("").lower()
     
