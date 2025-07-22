@@ -2,11 +2,7 @@
 import random 
 import sys
 import os
-from Charaters_Card_Game import wurm_stats,ant_stats
-
-
-
-
+from src.chars import wurm_stats, ant_stats
 shop_refresh_price = 5
                            # wartezeit zwischen nachricht und hauptmenu
 money = 50000
