@@ -1,10 +1,10 @@
-import time
+
 import random 
 import sys
 import os
 from Charaters_Card_Game import wurm_stats,ant_stats
 
-#test
+
 
 
 shop_refresh_price = 5
@@ -123,7 +123,7 @@ def shop():
                 if upgrade in pet_levels:
                     pet_levels[upgrade] += 5
                     print(f"you have upgraded {upgrade} to Level {pet_levels[upgrade]}")
-                wait = input()
+                
                 shop()
             else:
                 print("not enough Money")
@@ -185,7 +185,7 @@ def main_menu():
     if user_Request == "i":
         print("Your Inventory:")
         print(",".join([f"{pet} (Lv.{pet_levels.get(pet, 1)})" for pet in Inventory]))
-        wait = input()  
+         
         main_menu()
     elif user_Request == "f":
         Fight()
@@ -195,7 +195,7 @@ def main_menu():
         exit()
     else:
         print("")
-        time.sleep(tss)
+        
         main_menu()
 
 main_menu()
