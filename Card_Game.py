@@ -11,9 +11,9 @@ shop_refresh_price = 5
                            # wartezeit zwischen nachricht und hauptmenu
 money = 50000
 stage = 1
-Inventory = ["Wurm", "Ant"]
+Inventory = ["Worm", "Ant"]
 pet_levels = {
-    "Wurm": 1,
+    "Worm": 1,
     "Ant": 1,
 
 
