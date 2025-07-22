@@ -3,6 +3,7 @@ const express = require('express');
 const path = require('path');
 const dotenv = require('dotenv');
 const { spawn } = require('child_process');
+const { mainModule } = require('process');
 
 //Config
 dotenv.config();
@@ -17,19 +18,34 @@ app.use(express.json());
 
 //API
 app.post('/api/python', (req, res) => {
-    if (!req.body.name) {
+  const { message } = req.body;  
+  if (!message) {
         return res.status(400).send('Name is required.');
+  }
+    const pythonProcessData = req.body;
+    if (pythonProcessData.type === "INIT") {
+          const pythonInit = true;
+
     }
-    const pythonProcess = req.body;
 
     res.status(200).json({ status: 'success', message: 'Data received'});
 });
+
+//Content Proccess
+async function main() {
+  await pythonInit();
+  console.log('Python process initialized');
+}
 
 //Main Proccess
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 
-  const pythonProcess = spawn('python', ['./game.py']);
+  main();
+
+  //Python
+  const pythonEnv = { ...process.env, PORT: port };
+  const pythonProcess = spawn('python', ['./game.py'], { env: pythonEnv });
   pythonProcess.stdout.on('data', (data) => {
     console.log(`Python stdout: ${data}`);
   });

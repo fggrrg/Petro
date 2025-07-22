@@ -5,6 +5,9 @@ from src.chars import wurm_stats, ant_stats
 import requests
 import json
 
+port = os.environ.get('PORT', '3000')
+url = f"http://localhost:{port}/api/python"
+
 shop_refresh_price = 5
 
 money = 50000
@@ -145,7 +148,7 @@ def shop():
 
 def main_menu():
     try:
-        requests.post("http://localhost:3000/api/python", json={"message": "!INIT"})
+        requests.post(url, json={"message": "!INIT"})
     except requests.exceptions.RequestException as e:
         print("Error connecting to the server:", e)
 
