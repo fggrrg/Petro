@@ -4,7 +4,7 @@ import sys
 import os
 from Charaters_Card_Game import wurm_stats,ant_stats
 
-
+#test
 
 
 shop_refresh_price = 5
