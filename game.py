@@ -1,4 +1,3 @@
-
 import random 
 import sys
 import os
@@ -221,28 +220,3 @@ main_menu()
 # Pets passive Fähigkeiten: Z. B. 1 Dollar für Beenden eines Levels, 5 % mehr Schaden für alle Common-Pets etc.
 # 30 Pets (vorerst) adden
 #shop reset price nach jesder runde wieder auf 5
-#
-#
-#
-#
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
