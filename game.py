@@ -2,26 +2,17 @@ import random
 import sys
 import os
 from src.chars import wurm_stats, ant_stats
+import requests
+import json
+
 shop_refresh_price = 5
-                           # wartezeit zwischen nachricht und hauptmenu
+
 money = 50000
 stage = 1
 Inventory = ["Worm", "Ant"]
 pet_levels = {
     "Worm": 1,
     "Ant": 1,
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
 def roll_packs(anzahl, chance):
@@ -33,8 +24,8 @@ charakter_pack = roll_packs(3, 9)               # 0.3 alle 3 shops
 buff_pack = roll_packs(10, 2)                      # 2.5 packs pro shop
     
 def Fight():
-    dubble_check = input("You are fighting on stage "+ str(stage)+". Are you sure you want to fight? N/Y")
-    if dubble_check == "Y":
+    double_check = input("You are fighting on stage "+ str(stage)+". Are you sure you want to fight? N/Y")
+    if double_check == "Y":
         print("yea")
     else:
         main_menu()
@@ -153,6 +144,11 @@ def shop():
 
 
 def main_menu():
+    try:
+        requests.post("http://localhost:3000/api/python", json={"message": "!INIT"})
+    except requests.exceptions.RequestException as e:
+        print("Error connecting to the server:", e)
+
     global money
     
    

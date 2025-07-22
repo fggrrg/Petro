@@ -16,31 +16,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
 //API
-
-app.get('/api/data', (req, res) => {
-    res.json(data);
-});
-
-// POST
-app.post('/api/data', (req, res) => {
+app.post('/api/python', (req, res) => {
     if (!req.body.name) {
         return res.status(400).send('Name is required.');
     }
-    const newItem = {
-        id: data.length > 0 ? Math.max(...data.map(d => d.id)) + 1 : 1,
-        name: req.body.name
-    };
-    data.push(newItem);
-    res.status(201).json(newItem);
-});
+    const pythonProcess = req.body;
 
-// DELETEID
-app.delete('/api/data/:id', (req, res) => {
-    const index = data.findIndex(d => d.id === parseInt(req.params.id));
-    if (index === -1) return res.status(404).send('Item not found.');
-
-    const deletedItem = data.splice(index, 1);
-    res.json(deletedItem[0]);
+    res.status(200).json({ status: 'success', message: 'Data received'});
 });
 
 //Main Proccess
