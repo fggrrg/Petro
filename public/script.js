@@ -1,3 +1,5 @@
+//WEBSOCKET
+
 const ws = new WebSocket(`ws://${window.location.host}`);
 
 ws.onopen = () => {
@@ -15,3 +17,5 @@ ws.onclose = () => {
 ws.onerror = (error) => {
     console.error('WebSocket error:', error);
 };
+
+//Static

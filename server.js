@@ -37,9 +37,8 @@ const server = app.listen(port, () => {
 const wss = new webSocket.Server({ server });
 
 wss.on('connection', ws => {
-  console.log('Client connected, starting python process...');
+  console.log('user connected');
   const pythonProcess = spawn('python', ['./game.py']);
-
   pythonProcess.stdout.on('data', (data) => {
     console.log(`Python stdout: ${data}`);
   });
