@@ -3,7 +3,7 @@ const express = require('express');
 const path = require('path');
 const dotenv = require('dotenv');
 const { spawn } = require('child_process');
-const { mainModule } = require('process');
+const webSocket = require('ws');
 
 //Config
 dotenv.config();
@@ -23,36 +23,37 @@ app.post('/api/python', (req, res) => {
         return res.status(400).send('Name is required.');
   }
     const pythonProcessData = req.body;
-    if (pythonProcessData.type === "INIT") {
-          const pythonInit = true;
-
-    }
-
     res.status(200).json({ status: 'success', message: 'Data received'});
 });
 
-//Content Proccess
-async function main() {
-  await pythonInit();
-  console.log('Python process initialized');
-}
+//Content Process
+
 
 //Main Proccess
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
+});
 
-  main();
+const wss = new webSocket.Server({ server });
 
-  //Python
-  const pythonEnv = { ...process.env, PORT: port };
-  const pythonProcess = spawn('python', ['./game.py'], { env: pythonEnv });
+wss.on('connection', ws => {
+  console.log('Client connected, starting python process...');
+  const pythonProcess = spawn('python', ['./game.py']);
+
   pythonProcess.stdout.on('data', (data) => {
     console.log(`Python stdout: ${data}`);
   });
+
   pythonProcess.stderr.on('data', (data) => {
     console.error(`Python stderr: ${data}`);
   });
+
   pythonProcess.on('close', (code) => {
     console.log(`Python process exited with code ${code}`);
+  });
+
+  ws.on('close', () => {
+    console.log('Client disconnected, killing python process...');
+    pythonProcess.kill();
   });
 });
