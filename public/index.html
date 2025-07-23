@@ -1,14 +1,112 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Petro Online</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>YES THE FKIN SERVER WORKS MOTHERFUCKER WHAT DO YOU WANT??</h1>
-    <h2>Changes made.</h2>
-    <input style="display: none;" placeholder="Enter you UserID">
+    <div class="bg-stars" id="stars"></div>
+    
+    <!-- Main Menu -->
+    <div class="container main-menu" id="mainMenu">
+        <div class="stage-display">STAGE 1</div>
+        
+        <div class="menu-layout">
+            <div class="left-buttons">
+                <button class="game-button settings-btn">⚙️</button>
+                <button class="game-button" onclick="showInventory()">Profil</button>
+            </div>
+            
+            <div class="center-buttons">
+                <button class="game-button" onclick="showShop()">Shop</button>
+                <button class="game-button" onclick="showInventory()">Inventory</button>
+            </div>
+            
+            <div></div>
+        </div>
+    </div>
+    
+    <!-- Shop -->
+    <div class="container shop" id="shop">
+        <div class="money-display">💰 $150</div>
+        
+        <div class="shop-content">
+            <div class="packs-container">
+                <div class="booster-pack upgrade-pack">
+                    <div class="pack-name">Upgrade Pack</div>
+                    <div class="pack-price">$3</div>
+                    <div class="pack-stock">Stock: 25</div>
+                </div>
+                
+                <div class="booster-pack buff-pack">
+                    <div class="pack-name">Buff Pack</div>
+                    <div class="pack-price">$4</div>
+                    <div class="pack-stock">Stock: 18</div>
+                </div>
+                
+                <div class="booster-pack character-pack">
+                    <div class="pack-name">Character Pack</div>
+                    <div class="pack-price">$8</div>
+                    <div class="pack-stock">Stock: 12</div>
+                </div>
+                
+                <div class="booster-pack legendary-pack">
+                    <div class="pack-name">Legendary Upgrade Pack</div>
+                    <div class="pack-price">$10</div>
+                    <div class="pack-stock">Stock: 5</div>
+                </div>
+                
+                <div class="booster-pack money-pack">
+                    <div class="pack-name">Money Pack</div>
+                    <div class="pack-price">10 💰</div>
+                    <div class="pack-stock">Unendlich verfügbar</div>
+                </div>
+
+            </div>
+            
+            <div class="casino-section">
+                <div class="casino-wheel">
+                    🎰<br>RESHOP
+                </div>
+                <div class="pack-price">$5</div>
+            </div>
+        </div>
+        
+        <button class="menu-button" onclick="showMainMenu()">Menu</button>
+    </div>
+    
+    <!-- Inventory -->
+    <div class="container inventory" id="inventory">
+        <div class="rarity-sections">
+            <div class="rarity-section common">
+                <div class="rarity-title">COMMON</div>
+                <div class="pets-list" id="commonPets">
+                    <!-- Pets werden hier eingefügt -->
+                </div>
+            </div>
+            
+            <div class="rarity-section rare">
+                <div class="rarity-title">RARE</div>
+                <div class="pets-list" id="rarePets">
+                    <!-- Pets werden hier eingefügt -->
+                </div>
+            </div>
+            
+            <div class="rarity-section legendary">
+                <div class="rarity-title">LEGENDARY</div>
+                <div class="pets-list" id="legendaryPets">
+                    <!-- Pets werden hier eingefügt -->
+                </div>
+            </div>
+        </div>
+        
+        <button class="merge-button">MERGE</button>
+        
+        <button class="menu-button" onclick="showMainMenu()">Menu</button>
+    </div>
+
+    <script src="script.js"></script>
 </body>
-<script src="script.js"></script>
 </html>
