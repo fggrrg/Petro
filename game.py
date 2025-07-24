@@ -18,7 +18,7 @@ stage = 1
 Inventory = []
 pet_levels = {}
 
-# --- Static Data (Should be in a database/config file) ---
+# --- Static Data ---
 common_pets = ["ant", "bee", "beetle", "caterpillar", "cockroach", "earwig", "fly", "grasshopper", "ladybug", "maggot", "mosquito", "moth", "pillbug", "slug", "snale", "spider", "springtail", "tick", "worm"]
 rare_pets = ["badger", "cat", "cobra", "eagle", "falcon", "fox", "hamster", "lynx", "mouse", "otter", "owl", "peregrine_falcon", "rat", "raven", "shrew", "snake"]
 legendary_pets = ["alpha_wolf", "anaconda", "bear", "crocodile", "elephant", "jackal", "komodo_dragon", "lion", "shark", "tiger", "wolf", "wolverine"]
@@ -35,7 +35,6 @@ def send_update(action, data):
     try:
         requests.post(f"{API_URL}/game/update", json=payload, timeout=3)
     except requests.exceptions.RequestException as e:
-        # If the server is down, we can't do much, so we exit.
         print(f"Error communicating with server: {e}", file=sys.stderr, flush=True)
         sys.exit(1)
 
@@ -56,7 +55,6 @@ def save_game_state():
 
 def get_shop_data():
     """Generates and returns the current state of the shop."""
-    # This is just an example. You can expand this with your pack logic.
     return {
         "items": [
             {"id": "pack_common", "name": "Common Pet Pack", "price": 100, "quantity": 5},
@@ -68,7 +66,7 @@ def get_shop_data():
 def buy_item(item_id):
     """Handles the logic for a user buying an item from the shop."""
     global money
-    shop_data = get_shop_data() # In a real game, you'd have a persistent shop state
+    shop_data = get_shop_data()
     item = next((x for x in shop_data['items'] if x['id'] == item_id), None)
 
     if not item:
@@ -78,7 +76,6 @@ def buy_item(item_id):
     if money >= item['price']:
         money -= item['price']
         # --- Lootbox Reveal Logic ---
-        # This is where you determine what the user gets from the pack
         if item_id == 'pack_common':
             new_pet = random.choice(common_pets)
         elif item_id == 'pack_rare':
@@ -120,9 +117,8 @@ def main():
 
             if action == 'buy_item':
                 buy_item(data.get('itemId'))
-            elif action == 'get_shop': # Client requests shop data
+            elif action == 'get_shop':
                 send_update('shop_update', get_shop_data())
-            # Add more actions here as needed (e.g., 'start_fight', 'sell_pet')
 
         except json.JSONDecodeError:
             print(f"Invalid command from client: {line.strip()}", file=sys.stderr, flush=True)

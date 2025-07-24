@@ -29,7 +29,6 @@ app.post('/api/register', (req, res) => {
     let pin;
     let userExists = true;
     while (userExists) {
-        // Generate a 6-digit numeric PIN
         pin = Math.floor(100000 + Math.random() * 900000).toString();
         userExists = db.findUserByPin(pin);
     }
@@ -64,7 +63,7 @@ app.post('/api/game/update', (req, res) => {
     }
 });
 
-// Save Game State (can be removed if Python handles all state via updates)
+// Save Game State (can be removed WITH SOME CHANGES, THAT DOESNT EXIST YET!!)
 app.post('/api/game/save', (req, res) => {
     const { userId, money, stage, inventory } = req.body;
     if (!userId || money === undefined || stage === undefined || !inventory) {
@@ -106,10 +105,9 @@ wss.on('connection', (ws, req) => {
     let gameState = db.getGameState(userId);
     if (!gameState) {
         console.log(`No game state found for user ${userId}. Creating a new one.`);
-        // This function needs to be added to db.js to create a default state for an existing user
         db.createInitialGameState(userId);
         gameState = db.getGameState(userId);
-        if (!gameState) { // If it still fails, then there's a deeper issue.
+        if (!gameState) {
             ws.close(1011, 'Internal Error: Could not create game state.');
             return;
         }
@@ -126,7 +124,6 @@ wss.on('connection', (ws, req) => {
     clients.set(userId, { ws, pythonProcess });
 
     pythonProcess.stdout.on('data', (data) => {
-        // This will now primarily be for debugging or forwarding raw messages if needed
         console.log(`[User ${userId}] Python Raw: ${data.toString()}`);
     });
 
@@ -145,7 +142,6 @@ wss.on('connection', (ws, req) => {
     ws.on('message', (message) => {
         const messageString = message.toString();
         console.log(`Received command from user ${userId}: ${messageString}`);
-        // Forward the client's command to the python process's stdin
         pythonProcess.stdin.write(messageString + '\n');
     });
 
