@@ -1,110 +1,55 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Petro Online</title>
+    <title>Petro</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="bg-stars" id="stars"></div>
-    
-    <!-- Main Menu -->
-    <div class="container main-menu" id="mainMenu">
-        <div class="stage-display">STAGE 1</div>
-        
-        <div class="menu-layout">
-            <div class="left-buttons">
-                <button class="game-button settings-btn">⚙️</button>
-                <button class="game-button" onclick="showInventory()">Profil</button>
-            </div>
-            
-            <div class="center-buttons">
-                <button class="game-button" onclick="showShop()">Shop</button>
-                <button class="game-button" onclick="showInventory()">Inventory</button>
-            </div>
-            
-            <div></div>
-        </div>
-    </div>
-    
-    <!-- Shop -->
-    <div class="container shop" id="shop">
-        <div class="money-display">💰 $150</div>
-        
-        <div class="shop-content">
-            <div class="packs-container">
-                <div class="booster-pack upgrade-pack">
-                    <div class="pack-name">Upgrade Pack</div>
-                    <div class="pack-price">$3</div>
-                    <div class="pack-stock">Stock: 25</div>
-                </div>
-                
-                <div class="booster-pack buff-pack">
-                    <div class="pack-name">Buff Pack</div>
-                    <div class="pack-price">$4</div>
-                    <div class="pack-stock">Stock: 18</div>
-                </div>
-                
-                <div class="booster-pack character-pack">
-                    <div class="pack-name">Character Pack</div>
-                    <div class="pack-price">$8</div>
-                    <div class="pack-stock">Stock: 12</div>
-                </div>
-                
-                <div class="booster-pack legendary-pack">
-                    <div class="pack-name">Legendary Upgrade Pack</div>
-                    <div class="pack-price">$10</div>
-                    <div class="pack-stock">Stock: 5</div>
-                </div>
-                
-                <div class="booster-pack money-pack">
-                    <div class="pack-name">Money Pack</div>
-                    <div class="pack-price">10 💰</div>
-                    <div class="pack-stock">Unendlich verfügbar</div>
-                </div>
+    <div id="stars"></div>
 
-            </div>
-            
-            <div class="casino-section">
-                <div class="casino-wheel">
-                    🎰<br>RESHOP
-                </div>
-                <div class="pack-price">$5</div>
-            </div>
+    <!-- Auth Container -->
+    <div id="authContainer" class="container">
+        <h1>Welcome to Petro</h1>
+        <div id="loginForm">
+            <h2>Login</h2>
+            <input type="text" id="pinInput" placeholder="Enter your 6-digit PIN">
+            <button id="loginButton">Login</button>
+            <p>Don't have a PIN? <a href="#" id="showRegister">Register here</a>.</p>
         </div>
-        
-        <button class="menu-button" onclick="showMainMenu()">Menu</button>
+        <div id="registerForm" class="hidden">
+            <h2>Register</h2>
+            <p>Click the button below to get a new PIN.</p>
+            <button id="registerButton">Register</button>
+            <p id="newPinSection" class="hidden">Your new PIN is: <strong id="newPin"></strong></p>
+            <p>Already have a PIN? <a href="#" id="showLogin">Login here</a>.</p>
+        </div>
+        <p id="authError" class="error-message"></p>
     </div>
-    
-    <!-- Inventory -->
-    <div class="container inventory" id="inventory">
-        <div class="rarity-sections">
-            <div class="rarity-section common">
-                <div class="rarity-title">COMMON</div>
-                <div class="pets-list" id="commonPets">
-                    <!-- Pets werden hier eingefügt -->
-                </div>
-            </div>
-            
-            <div class="rarity-section rare">
-                <div class="rarity-title">RARE</div>
-                <div class="pets-list" id="rarePets">
-                    <!-- Pets werden hier eingefügt -->
-                </div>
-            </div>
-            
-            <div class="rarity-section legendary">
-                <div class="rarity-title">LEGENDARY</div>
-                <div class="pets-list" id="legendaryPets">
-                    <!-- Pets werden hier eingefügt -->
-                </div>
-            </div>
+
+    <!-- Game Container (Initially Hidden) -->
+    <div id="gameContainer" class="container hidden">
+        <div id="mainMenu">
+            <button onclick="showShop()">Shop</button>
+            <button onclick="showInventory()">Inventory</button>
+            <!-- Game content will be dynamically added here -->
+        </div>
+
+        <div id="shop" class="hidden">
+            <h2>Shop</h2>
+            <button onclick="showMainMenu()">Back to Main Menu</button>
+            <!-- Shop content -->
+        </div>
+
+        <div id="inventory" class="hidden">
+            <h2>Inventory</h2>
+            <button onclick="showMainMenu()">Back to Main Menu</button>
+            <!-- Inventory content -->
         </div>
         
-        <button class="merge-button">MERGE</button>
-        
-        <button class="menu-button" onclick="showMainMenu()">Menu</button>
+        <div id="game-output"></div>
+
     </div>
 
     <script src="script.js"></script>
