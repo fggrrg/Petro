@@ -26,7 +26,6 @@ legendary_pets = ["alpha_wolf", "anaconda", "bear", "crocodile", "elephant", "ja
 # --- Communication with Server ---
 
 def send_update(action, data):
-    """Sends a structured update to the server to be forwarded to the client."""
     payload = {
         "userId": user_id,
         "action": action,
