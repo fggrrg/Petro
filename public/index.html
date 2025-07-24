@@ -8,7 +8,7 @@
 </head>
 <body>
     <div id="stars"></div>
-
+    
     <!-- Auth Container -->
     <div id="authContainer" class="container">
         <h1>Welcome to Petro</h1>
@@ -27,7 +27,7 @@
         </div>
         <p id="authError" class="error-message"></p>
     </div>
-
+    
     <!-- Game Container (Initially Hidden) -->
     <div id="gameContainer" class="container hidden">
         <header>
@@ -41,7 +41,7 @@
                 <button id="navFight">Fight</button>
             </nav>
         </header>
-
+        
         <main id="mainContent">
             <!-- Shop View -->
             <div id="shopView" class="view hidden">
@@ -49,30 +49,21 @@
                 <div id="shopItems" class="item-grid"></div>
                 <p id="shopError" class="error-message"></p>
             </div>
-
+            
             <!-- Inventory View -->
             <div id="inventoryView" class="view hidden">
                 <h2>Your Pets</h2>
                 <div id="inventoryItems" class="item-grid"></div>
             </div>
-
+            
             <!-- Fight View -->
             <div id="fightView" class="view hidden">
                 <h2>Prepare for Battle!</h2>
                 <!-- Fight UI will go here -->
             </div>
         </main>
-
-        <!-- Modal for loot reveals, etc. -->
-        <div id="modal" class="hidden">
-            <div id="modalContent">
-                <h3 id="modalTitle"></h3>
-                <p id="modalText"></p>
-                <button id="modalClose">Close</button>
-            </div>
-        </div>
     </div>
-
+    
     <script src="script.js"></script>
 </body>
 </html>
