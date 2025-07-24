@@ -1,40 +1,16 @@
+/* General Body and Background */
+body {
+    font-family: 'Press Start 2P', cursive; /* A popular pixel-art font */
+    background-color: #000;
+    color: #fff;
+    margin: 0;
+    overflow: hidden;
+}
+
+/* Import the pixel font */
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Press Start 2P', cursive;
-    background: linear-gradient(45deg, #1a1a2e, #16213e, #0f3460);
-    background-size: 400% 400%;
-    animation: gradientShift 8s ease infinite;
-    min-height: 100vh;
-    color: #fff;
-    overflow-x: hidden;
-}
-
-@keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-.container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 50px;
-    min-height: 100vh;
-    width: 100vw;
-    position: relative;
-}
-
-/* Animated background elements */
-.bg-stars {
+#stars {
     position: fixed;
     top: 0;
     left: 0;
@@ -45,308 +21,142 @@ body {
 
 .star {
     position: absolute;
-    background: white;
-    border-radius: 50%;
-    animation: twinkle 3s infinite;
+    background-color: #ffffff;
+    width: 2px; /* Fixed size for a more uniform pixel look */
+    height: 2px;
+    animation: twinkle 5s infinite ease-in-out;
 }
 
 @keyframes twinkle {
-    0%, 100% { opacity: 0.3; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.2); }
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
 }
 
-/* Main Menu Styles */
-.main-menu {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 100px;
-    width: 95%;
-    max-width: 1600px;
-    height: 85vh;
-    justify-content: center;
-}
-
-.stage-display {
-    background: linear-gradient(135deg, #4a90e2, #357abd);
-    border: 10px solid #fff;
-    border-radius: 40px;
-    padding: 150px 300px;
-    font-size: 120px;
+/* Containers and Layout */
+.container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #1a1a1a;
+    border: 3px solid #fff;
     text-align: center;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-}
-
-.menu-layout {
-    display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
-    gap: 80px;
-    width: 100%;
-    align-items: center;
-}
-
-.left-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 50px;
-}
-
-.center-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 50px;
-}
-
-.game-button {
-    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
-    border: 8px solid #fff;
-    border-radius: 25px;
-    padding: 50px 100px;
-    font-family: 'Press Start 2P', cursive;
-    font-size: 42px;
-    color: white;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-    min-width: 500px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-}
-
-.game-button:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-}
-
-.settings-btn {
-    background: linear-gradient(135deg, #95a5a6, #7f8c8d);
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 80px;
-    min-width: auto;
-}
-
-.shop, .inventory {
-    padding: 40px; /* vorher: 80px */
-    height: 85vh;  /* vorher: 90vh */
-}
-
-.money-display {
-    padding: 30px 40px; /* vorher: 50px 60px */
-    font-size: 40px;     /* vorher: 56px */
-    margin-bottom: 40px; /* vorher: 80px */
-}
-
-.shop-content {
-    gap: 40px; /* vorher: 80px */
-}
-
-.packs-container {
-    gap: 30px; /* vorher: 50px */
-}
-
-.booster-pack {
-    background: linear-gradient(135deg, var(--pack-color), var(--pack-color-dark));
-    border: 8px solid #fff;
-    border-radius: 25px; /* etwas kleiner */
-    padding: 30px;         /* vorher: 50px */
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-    min-width: 280px;      /* vorher: 350px */
-    flex: 1;
-}
-
-.booster-pack:hover {
-    transform: translateY(-12px);
-    box-shadow: 0 25px 50px rgba(0,0,0,0.4);
-}
-
-.upgrade-pack { --pack-color: #2ecc71; --pack-color-dark: #27ae60; }
-.buff-pack { --pack-color: #f39c12; --pack-color-dark: #e67e22; }
-.character-pack { --pack-color: #3498db; --pack-color-dark: #2980b9; }
-.legendary-pack { --pack-color: #f1c40f; --pack-color-dark: #f39c12; }
-
-/* Neues Money Pack */
-.money-pack { --pack-color: #f9ca24; --pack-color-dark: #f1c40f; }
-
-.pack-name {
-    font-size: 22px;      /* vorher: 28px */
-    margin-bottom: 20px;  /* vorher: 40px */
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-    line-height: 1.4;
-}
-
-.pack-price {
-    font-size: 28px;      /* vorher: 36px */
-    margin-bottom: 20px;
-    color: #fff;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-}
-
-.pack-stock {
-    font-size: 18px;      /* vorher: 24px */
-    opacity: 0.9;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-}
-
-.casino-section {
-    gap: 25px;            /* vorher: 40px */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.casino-wheel {
-    width: 220px;         /* vorher: 300px */
-    height: 220px;
-    background: linear-gradient(135deg, #e74c3c, #c0392b);
-    border: 8px solid #fff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 24px;      /* vorher: 32px */
-    text-align: center;
-    line-height: 1.2;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-}
-
-.casino-wheel:hover {
-    transform: rotate(10deg) scale(1.05);
-}
-
-/* Inventory Styles */
-.inventory {
-    display: flex;
-    flex-direction: column;
-    width: 98%;
-    max-width: 1800px;
-    padding: 40px; /* vorher: 80px */
-    height: 85vh;  /* vorher: 90vh */
-}
-
-.rarity-sections {
-    display: flex;
-    flex-direction: column;
-    gap: 50px;            /* vorher: 80px */
-    margin-bottom: 60px;  /* vorher: 100px */
-}
-
-.rarity-section {
-    background: linear-gradient(135deg, var(--rarity-color), var(--rarity-color-dark));
-    border: 8px solid #fff;
-    border-radius: 25px;
-    padding: 30px;        /* vorher: 50px */
-    min-height: 250px;
-}
-
-.common { --rarity-color: #2ecc71; --rarity-color-dark: #27ae60; }
-.rare { --rarity-color: #3498db; --rarity-color-dark: #2980b9; }
-.legendary { --rarity-color: #f1c40f; --rarity-color-dark: #f39c12; }
-
-.rarity-title {
-    font-size: 32px;      /* vorher: 44px */
-    margin-bottom: 25px;
-    text-align: center;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-}
-
-.pets-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;            /* vorher: 25px */
-    min-height: 150px;
-    background: rgba(0,0,0,0.2);
-    border-radius: 25px;
-    padding: 30px;        /* vorher: 40px */
-}
-
-.merge-button {
-    background: linear-gradient(135deg, #9b59b6, #8e44ad);
-    border: 8px solid #fff;
-    border-radius: 35px;
-    padding: 30px 60px;   /* vorher: 50px 100px */
-    font-family: 'Press Start 2P', cursive;
-    font-size: 32px;      /* vorher: 44px */
-    color: white;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-    margin: 0 auto;
-    display: block;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-}
-
-.merge-button:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 30px 60px rgba(0,0,0,0.4);
-}
-
-.menu-button {
-    background: linear-gradient(135deg, #34495e, #2c3e50);
-    border: 6px solid #fff;
-    border-radius: 25px;
-    padding: 40px 60px;
-    font-family: 'Press Start 2P', cursive;
-    font-size: 28px;
-    color: white;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: fixed;
-    bottom: 80px;
-    left: 80px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-}
-
-.menu-button:hover {
-    transform: translateY(-6px);
 }
 
 .hidden {
-    display: none !important;
+    display: none;
 }
 
-/* Responsive adjustments */
-@media (max-width: 1400px) {
-    .stage-display {
-        padding: 100px 200px;
-        font-size: 80px;
-    }
-    
-    .game-button {
-        font-size: 32px;
-        padding: 40px 80px;
-        min-width: 400px;
-    }
-    
-    .money-display {
-        font-size: 42px;
-        padding: 40px 50px;
-    }
+/* Authentication Forms */
+#authContainer input[type="text"] {
+    width: 80%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 2px solid #fff;
+    background-color: #000;
+    color: #fff;
+    font-family: 'Press Start 2P', cursive;
 }
 
-@media (max-width: 1000px) {
-    .packs-container {
-        flex-direction: column;
-        gap: 30px;
-    }
-    
-    .shop-content {
-        flex-direction: column;
-        gap: 50px;
-    }
-    
-    .menu-layout {
-        grid-template-columns: 1fr;
-        gap: 40px;
-    }
+#authContainer button {
+    padding: 10px 20px;
+    border: 2px solid #fff;
+    background-color: #333;
+    color: #fff;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+#authContainer a {
+    color: #ff0;
+    text-decoration: underline;
+}
+
+.error-message {
+    color: #f00;
+    margin-top: 10px;
+}
+
+#newPinSection {
+    margin-top: 15px;
+    font-size: 1.2em;
+}
+
+/* Game Container */
+#gameContainer header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #fff;
+}
+
+#playerStats span {
+    margin-right: 20px;
+}
+
+#gameContainer nav button {
+    margin-left: 10px;
+    padding: 8px 15px;
+    background-color: #333;
+    color: #fff;
+    border: 2px solid #fff;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.view {
+    padding: 10px;
+}
+
+.item-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.item, .shop-item {
+    background-color: #000;
+    border: 2px solid #fff;
+    padding: 15px;
+    text-align: center;
+}
+
+.shop-item {
+    cursor: pointer;
+}
+
+.shop-item:hover {
+    background-color: #333;
+}
+
+/* Modal */
+#modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100; /* Ensure it's on top */
+}
+
+#modalContent {
+    background-color: #1a1a1a;
+    padding: 30px;
+    border: 3px solid #fff;
+    text-align: center;
+}
+
+#modalClose {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    border: 2px solid #fff;
+    cursor: pointer;
+    text-transform: uppercase;
 }

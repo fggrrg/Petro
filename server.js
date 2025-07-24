@@ -12,34 +12,25 @@ const db = require('./src/db');
 dotenv.config();
 db.initializeDatabase();
 
-
-
-
 //Init
 const app = express();
 const port = process.env.PORT || 3000;
 const clients = new Map();
-
-
-
-
 
 //Middleware
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(cookieParser());
 
-
-
-
-//API
+// --- API Endpoints ---
 
 // User Registration
 app.post('/api/register', (req, res) => {
     let pin;
     let userExists = true;
     while (userExists) {
-        pin = Math.random().toString(36).substring(2, 8).toUpperCase();
+        // Generate a 6-digit numeric PIN
+        pin = Math.floor(100000 + Math.random() * 900000).toString();
         userExists = db.findUserByPin(pin);
     }
     db.createUser(pin);
@@ -54,12 +45,26 @@ app.post('/api/login', (req, res) => {
         return res.status(401).json({ error: 'Invalid PIN' });
     }
     const sessionToken = crypto.randomUUID();
-    res.cookie('session_token', sessionToken, { httpOnly: true, secure: true, maxAge: 3600000 }); //1h
+    res.cookie('session_token', sessionToken, { httpOnly: true, maxAge: 3600000 });
     app.set(sessionToken, user.id);
     res.status(200).json({ message: 'Login successful' });
 });
 
-// Save Game State
+// API for Python to send updates to the client
+app.post('/api/game/update', (req, res) => {
+    const { userId, action, data } = req.body;
+    const client = clients.get(userId);
+
+    if (client && client.ws.readyState === webSocket.OPEN) {
+        client.ws.send(JSON.stringify({ action, data }));
+        res.status(200).json({ status: 'success' });
+    } else {
+        console.error(`Could not send update to user ${userId}. Client not found or connection closed.`);
+        res.status(404).json({ error: 'Client not found or connection closed' });
+    }
+});
+
+// Save Game State (can be removed if Python handles all state via updates)
 app.post('/api/game/save', (req, res) => {
     const { userId, money, stage, inventory } = req.body;
     if (!userId || money === undefined || stage === undefined || !inventory) {
@@ -74,12 +79,6 @@ app.post('/api/game/save', (req, res) => {
     }
 });
 
-
-
-
-
-
-
 //Main Proccess
 const server = app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
@@ -88,27 +87,34 @@ const server = app.listen(port, () => {
 const wss = new webSocket.Server({ server });
 
 wss.on('connection', (ws, req) => {
-    // Extract session token from cookies
-    const cookies = req.headers.cookie.split(';').reduce((acc, cookie) => {
+    const cookieHeader = req.headers.cookie || '';
+    const cookies = cookieHeader.split(';').reduce((acc, cookie) => {
         const [key, value] = cookie.trim().split('=');
-        acc[key] = value;
+        if (key) acc[key] = value;
         return acc;
     }, {});
+
     const sessionToken = cookies.session_token;
-    const userId = app.get(sessionToken);
+    const userId = sessionToken ? app.get(sessionToken) : null;
 
     if (!userId) {
-        console.log('Unauthorized WebSocket connection attempt.');
         ws.close(1008, 'Unauthorized');
         return;
     }
 
     console.log(`User ${userId} connected via WebSocket.`);
+    let gameState = db.getGameState(userId);
+    if (!gameState) {
+        console.log(`No game state found for user ${userId}. Creating a new one.`);
+        // This function needs to be added to db.js to create a default state for an existing user
+        db.createInitialGameState(userId);
+        gameState = db.getGameState(userId);
+        if (!gameState) { // If it still fails, then there's a deeper issue.
+            ws.close(1011, 'Internal Error: Could not create game state.');
+            return;
+        }
+    }
 
-    // Load game state
-    const gameState = db.getGameState(userId);
-
-    // Spawn Python process with user ID and game state
     const pythonProcess = spawn('python', [
         './game.py',
         userId,
@@ -120,9 +126,8 @@ wss.on('connection', (ws, req) => {
     clients.set(userId, { ws, pythonProcess });
 
     pythonProcess.stdout.on('data', (data) => {
-        const message = data.toString();
-        console.log(`[User ${userId}] Python Output: ${message}`);
-        ws.send(message);
+        // This will now primarily be for debugging or forwarding raw messages if needed
+        console.log(`[User ${userId}] Python Raw: ${data.toString()}`);
     });
 
     pythonProcess.stderr.on('data', (data) => {
@@ -139,7 +144,8 @@ wss.on('connection', (ws, req) => {
 
     ws.on('message', (message) => {
         const messageString = message.toString();
-        console.log(`Received message from user ${userId}: ${messageString}`);
+        console.log(`Received command from user ${userId}: ${messageString}`);
+        // Forward the client's command to the python process's stdin
         pythonProcess.stdin.write(messageString + '\n');
     });
 

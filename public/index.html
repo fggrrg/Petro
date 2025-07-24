@@ -30,26 +30,47 @@
 
     <!-- Game Container (Initially Hidden) -->
     <div id="gameContainer" class="container hidden">
-        <div id="mainMenu">
-            <button onclick="showShop()">Shop</button>
-            <button onclick="showInventory()">Inventory</button>
-            <!-- Game content will be dynamically added here -->
-        </div>
+        <header>
+            <div id="playerStats">
+                <span>Money: <span id="money">-</span></span>
+                <span>Stage: <span id="stage">-</span></span>
+            </div>
+            <nav>
+                <button id="navShop">Shop</button>
+                <button id="navInventory">Inventory</button>
+                <button id="navFight">Fight</button>
+            </nav>
+        </header>
 
-        <div id="shop" class="hidden">
-            <h2>Shop</h2>
-            <button onclick="showMainMenu()">Back to Main Menu</button>
-            <!-- Shop content -->
-        </div>
+        <main id="mainContent">
+            <!-- Shop View -->
+            <div id="shopView" class="view hidden">
+                <h2>Shop</h2>
+                <div id="shopItems" class="item-grid"></div>
+                <p id="shopError" class="error-message"></p>
+            </div>
 
-        <div id="inventory" class="hidden">
-            <h2>Inventory</h2>
-            <button onclick="showMainMenu()">Back to Main Menu</button>
-            <!-- Inventory content -->
-        </div>
-        
-        <div id="game-output"></div>
+            <!-- Inventory View -->
+            <div id="inventoryView" class="view hidden">
+                <h2>Your Pets</h2>
+                <div id="inventoryItems" class="item-grid"></div>
+            </div>
 
+            <!-- Fight View -->
+            <div id="fightView" class="view hidden">
+                <h2>Prepare for Battle!</h2>
+                <!-- Fight UI will go here -->
+            </div>
+        </main>
+
+        <!-- Modal for loot reveals, etc. -->
+        <div id="modal" class="hidden">
+            <div id="modalContent">
+                <h3 id="modalTitle"></h3>
+                <p id="modalText"></p>
+                <button id="modalClose">Close</button>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
