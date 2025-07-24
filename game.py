@@ -2,7 +2,7 @@ import time
 import random 
 import sys
 import os
-from Charaters_Card_Game import *
+from chars import *
 
 
 shop_refresh_price = 5
@@ -205,12 +205,11 @@ def main_menu():
         Fight()
     elif user_Request == "s":
         shop()
-    elif user_Request == "esc" or "e":
+    elif user_Request == "e":
         exit()
     else:
-        print("")
-        time.sleep(tss)
         main_menu()
+
 print("")
 print(f"56 Charakters werden geladen")
 time.sleep(2)
