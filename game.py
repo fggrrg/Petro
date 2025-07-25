@@ -37,11 +37,11 @@ def send_update(action, data):
         "userId": user_id,
         "action": action,
         "data": data
-    })
+    }
     try:
         requests.post(f"{API_URL}/game/update", json=payload, timeout=3)
     except requests.exceptions.RequestException as e:
-        print(f"Error communicating with server: {e}", file=sys.stderr, flush=True
+        print(f"Error communicating with server: {e}", file=sys.stderr, flush=True)
         sys.exit(1)
 
 
