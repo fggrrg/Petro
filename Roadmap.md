@@ -1,4 +1,3 @@
-User connect => Py Sends INIT => Server to Frontend => Sends INIT => Frontend to backend => checks USRID => backend to py => Check DB => adapt game stats
 
 
 # Pläne:

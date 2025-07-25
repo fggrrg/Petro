@@ -5,7 +5,7 @@ import json
 import random
 import time
 from dotenv import load_dotenv
-from chars import *
+from src.chars import *
 
 load_dotenv()
 
@@ -120,10 +120,11 @@ def buy_item(item_id):
                 'not_buy_reason': reason
                 })
         else:
-            reason = "not on Stock"
+            reason = "Not on Stock"
             send_update('user_message', {
             'not_buy_reason': reason
             }) 
+
 
 def send_initial_game_state():
     send_update('initial_state', {
