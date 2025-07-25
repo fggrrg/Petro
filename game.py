@@ -20,7 +20,7 @@ Inventory_raw = ["Worm"]
 Inventory_finish = []
 tss = 1.5                               # wartezeit zwischen nachricht und hauptmenu
 reroll_shop = 5
-
+pet_levels_specdific_user = pet_levels
 # ---Upgrade Pack randomizer-----
 def roll_packs(anzahl, chance):
     return sum(1 for _ in range(anzahl) if random.randint(0, chance) == 1)
@@ -66,7 +66,7 @@ def save_game_state():
 def Inventory_function():
     global Inventory_finish
     Inventory_finish = [f"{pet} (lv.{pet_levels[pet]})" for pet in Inventory_raw if pet in pet_levels]
-    user_Request = json.loads(sys.stdin.readline().strip()).get('data', {}).get('petName', '')
+    user_Request = json.loads(sys.stdin.readline().strip()).get('data', {}).get('petName', '')            #placeholder
     if user_Request in Inventory_raw:
         specifik_pet_stat = (all_pet_stats[user_Request])
         send_update('user_message', {
