@@ -20,7 +20,7 @@ Inventory_raw = ["Worm"]
 Inventory_finish = []
 tss = 1.5                               # wartezeit zwischen nachricht und hauptmenu
 reroll_shop = 5
-pet_levels_specdific_user = pet_levels
+pet_levels_specific_user = pet_levels
 # ---Upgrade Pack randomizer-----
 def roll_packs(anzahl, chance):
     return sum(1 for _ in range(anzahl) if random.randint(0, chance) == 1)
@@ -112,7 +112,7 @@ def buy_item(item_id):
                 upgrade_pack -= 1
                 upgrade = random.choice(Inventory_raw)
                 if upgrade in pet_levels:
-                    pet_levels[upgrade] += 1
+                    pet_levels_specific_user[upgrade] += 1
                     
             else:
                 reason = "Not enough Money"
