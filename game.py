@@ -29,8 +29,7 @@ upgrade_pack = roll_packs(10, 2)                 # durschnittlich 2.5 packs pro 
 legendary_upgrade_pack = roll_packs(5, 20)       # 0.25 also alle 4 shops
 charakter_pack = roll_packs(3, 9)               # 0.3 alle 3 shops
 buff_pack = roll_packs(10, 2)
-# --- Static Data ---
-                    
+          
 # --- Communication with Server ---
 
 def send_update(action, data):
