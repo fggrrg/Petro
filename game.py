@@ -21,6 +21,7 @@ Inventory_finish = []
 tss = 1.5                               # wartezeit zwischen nachricht und hauptmenu
 reroll_shop = 5
 pet_levels_specific_user = pet_levels
+
 # ---Upgrade Pack randomizer-----
 def roll_packs(anzahl, chance):
     return sum(1 for _ in range(anzahl) if random.randint(0, chance) == 1)
@@ -31,7 +32,6 @@ charakter_pack = roll_packs(3, 9)               # 0.3 alle 3 shops
 buff_pack = roll_packs(10, 2)
           
 # --- Communication with Server ---
-
 def send_update(action, data):
     payload = {
         "userId": user_id,
@@ -84,7 +84,7 @@ def get_shop_data():
     elif user_Request_Reroll_bought == 1:
         reroll_shop += 1
     else:
-        print("", file=sys.stderr, flush=True)         # kp ob das so richtig is
+        print("", file=sys.stderr, flush=True)         # kp ob das so richtig is # ne is es nicht :)
     packs = {
    'upgrade_pack': roll_packs(10, 2),
    'legendary_upgrade_pack': roll_packs(5, 20),
@@ -135,7 +135,6 @@ def send_initial_game_state():
 
 
 # --- Main Game Loop ---
-
 def main():
     send_initial_game_state()
 
@@ -180,4 +179,4 @@ if __name__ == "__main__":
 #
 #
 #
-#
+# 
