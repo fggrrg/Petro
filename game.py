@@ -5,8 +5,7 @@ import json
 import random
 import time
 from dotenv import load_dotenv
-from src.chars import *
-
+from src.chars import pet_levels, all_pet_stats
 load_dotenv()
 
 port = os.getenv("PORT", "3000")
@@ -73,7 +72,7 @@ def Inventory_function():
         })
         Inventory_function()
     
-        
+       
 
 def get_shop_data():
     global user_Request_Round_end, user_Request_Reroll_bought, reroll_shop
@@ -84,7 +83,7 @@ def get_shop_data():
     elif user_Request_Reroll_bought == 1:
         reroll_shop += 1
     else:
-        print("", file=sys.stderr, flush=True)         # kp ob das so richtig is # ne is es nicht :)
+        print("", file=sys.stderr, flush=True)         # kp ob das so richtig is # ne is es nicht :) # XD XD XD
     packs = {
    'upgrade_pack': roll_packs(10, 2),
    'legendary_upgrade_pack': roll_packs(5, 20),
@@ -164,7 +163,6 @@ if __name__ == "__main__":
     else:
         print("FATAL: Not enough game state information provided to start.", file=sys.stderr, flush=True)
         sys.exit(1)
-
 
 
 
