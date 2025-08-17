@@ -70,9 +70,7 @@ def Inventory_function():
         send_update('user_message', {
         'specifik_pet_stat_request': {'specifik_pet_stat': specifik_pet_stat}
         })
-        Inventory_function()
     
-       
 
 def get_shop_data():
     global user_Request_Round_end, user_Request_Reroll_bought, reroll_shop
@@ -101,7 +99,7 @@ def get_shop_data():
 
 
 def buy_item(item_id):
-    global money
+    global money, upgrade_pack, Inventory_raw, pet_levels_specific_user, Inventory_finish
     user_Request_Pack_bought = json.loads(sys.stdin.readline().strip()).get('data', {}).get('endRound', '')  # placeholder
     if user_Request_Pack_bought == "Upgrade_Pack":
         if upgrade_pack > 0:
@@ -122,6 +120,7 @@ def buy_item(item_id):
             send_update('user_message', {
             'not_buy_reason': reason
             }) 
+    
 
 
 def send_initial_game_state():
