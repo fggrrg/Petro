@@ -99,7 +99,7 @@ def get_shop_data():
 
 
 def buy_item(item_id):
-    global money, upgrade_pack, Inventory_raw, pet_levels_specific_user, Inventory_finish
+    global money, upgrade_pack, Inventory_raw, pet_levels_specific_user, Inventory_finish, legendary_upgrade_pack, upgrade
     user_Request_Pack_bought = json.loads(sys.stdin.readline().strip()).get('data', {}).get('endRound', '')  # placeholder
     if user_Request_Pack_bought == "Upgrade_Pack":
         if upgrade_pack > 0:
@@ -109,6 +109,44 @@ def buy_item(item_id):
                 upgrade = random.choice(Inventory_raw)
                 if upgrade in pet_levels:
                     pet_levels_specific_user[upgrade] += 1
+                    
+            else:
+                reason = "Not enough Money"
+                send_update('user_message', {
+                'not_buy_reason': reason
+                })
+        else:
+            reason = "Not on Stock"
+            send_update('user_message', {
+            'not_buy_reason': reason
+            }) 
+    elif user_Request_Pack_bought == "Legendary_Upgrade_Pack":
+        if legendary_upgrade_pack > 0:
+            if money > 9:
+                money -= 10
+                legendary_upgrade_pack -= 1
+                upgrade = random.choice(Inventory_raw)
+                if upgrade in pet_levels:
+                    pet_levels_specific_user[upgrade] += 5
+                    
+            else:
+                reason = "Not enough Money"
+                send_update('user_message', {
+                'not_buy_reason': reason
+                })
+        else:
+            reason = "Not on Stock"
+            send_update('user_message', {
+            'not_buy_reason': reason
+            }) 
+    elif user_Request_Pack_bought == "Charakter_Pack":
+        if charakter_pack > 0:
+            if money > 7:
+                money -= 8
+                charakter_pack -= 1
+                
+                if upgrade in pet_levels:
+                    pet_levels_specific_user[upgrade] += 5
                     
             else:
                 reason = "Not enough Money"
