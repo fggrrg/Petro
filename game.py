@@ -5,7 +5,7 @@ import json
 import random
 import time
 from dotenv import load_dotenv
-from src.chars import pet_levels, all_pet_stats
+from src.chars import *
 load_dotenv()
 
 port = os.getenv("PORT", "3000")
@@ -20,7 +20,12 @@ Inventory_finish = []
 tss = 1.5                               # wartezeit zwischen nachricht und hauptmenu
 reroll_shop = 5
 pet_levels_specific_user = pet_levels
-
+legendary_pets = legendary_p.copy()
+rare_pets = rare_p.copy()
+common_pets = common_p.copy()
+starter_pets = starter_p.copy()
+pet_levels = p_levels.copy()
+all_pet_stats = all_p_stats.copy()
 # ---Upgrade Pack randomizer-----
 def roll_packs(anzahl, chance):
     return sum(1 for _ in range(anzahl) if random.randint(0, chance) == 1)
@@ -144,9 +149,32 @@ def buy_item(item_id):
             if money > 7:
                 money -= 8
                 charakter_pack -= 1
+                chance = random.randint(1, 100)
+
+                if chance <= 5:  # 5% Legendary
+                    if legendary_pets:
+                        pet = random.choice(legendary_pets)
+                        Inventory_raw.append(pet)
+                        legendary_pets.remove(pet)
+                        print(f"You have got a legendary {pet}.")
+                        
+                elif chance <= 25:  # 20% Rare 
+                    if rare_pets:
+                        pet = random.choice(rare_pets)
+                        Inventory_raw.append(pet)
+                        rare_pets.remove(pet)
+                        print(f"You have got a rare {pet}.")
+                        
+                else:  # 75% Common 
+                    if common_pets:
+                        pet = random.choice(common_pets)
+                        Inventory_raw.append(pet)
+                        common_pets.remove(pet)
+                        print(f"You have got a common {pet}.")
+                    else:
+                        print("No common pets available.")
                 
-                if upgrade in pet_levels:
-                    pet_levels_specific_user[upgrade] += 5
+                
                     
             else:
                 reason = "Not enough Money"
