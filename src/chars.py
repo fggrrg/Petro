@@ -197,14 +197,3 @@ all_p_stats = {
 
 
 
-def level_update():
-    for pet_name, stats in all_pet_stats.items():
-        level = pet_levels.get(pet_name, 1)
-        rarity = stats["rarity"]
-
-        # Erhöhungsfaktor je nach Rarität
-        scale = rarity if rarity > 0 else 1  # starter = 1
-
-        # Basiswerte anpassen
-        stats["attack"] += (level - 1) * scale
-        stats["hp"] += (level - 1) * scale

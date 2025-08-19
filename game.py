@@ -19,13 +19,12 @@ Inventory_raw = ["Worm"]
 Inventory_finish = []
 tss = 1.5                               # wartezeit zwischen nachricht und hauptmenu
 reroll_shop = 5
-pet_levels_specific_user = pet_levels
-legendary_pets = legendary_p.copy()
-rare_pets = rare_p.copy()
-common_pets = common_p.copy()
-starter_pets = starter_p.copy()
-pet_levels = p_levels.copy()
-all_pet_stats = all_p_stats.copy()
+legendary_pets = legendary_p
+rare_pets = rare_p
+common_pets = common_p
+starter_pets = starter_p
+pet_levels = p_levels
+all_pet_stats = all_p_stats
 # ---Upgrade Pack randomizer-----
 def roll_packs(anzahl, chance):
     return sum(1 for _ in range(anzahl) if random.randint(0, chance) == 1)
@@ -104,7 +103,7 @@ def get_shop_data():
 
 
 def buy_item(item_id):
-    global money, upgrade_pack, Inventory_raw, pet_levels_specific_user, Inventory_finish, legendary_upgrade_pack, upgrade
+    global money, upgrade_pack, Inventory_raw, pet_levels, Inventory_finish, legendary_upgrade_pack, upgrade
     user_Request_Pack_bought = json.loads(sys.stdin.readline().strip()).get('data', {}).get('endRound', '')  # placeholder
     if user_Request_Pack_bought == "Upgrade_Pack":
         if upgrade_pack > 0:
@@ -112,8 +111,10 @@ def buy_item(item_id):
                 money -= 3
                 upgrade_pack -= 1
                 upgrade = random.choice(Inventory_raw)
-                if upgrade in pet_levels:
-                    pet_levels_specific_user[upgrade] += 1
+                if upgrade in pet_levels and upgrade in all_pet_stats:
+                    pet_levels[upgrade] += 1
+                    all_pet_stats[upgrade]["attack"] += all_pet_stats[upgrade]["rarity"] 
+                    all_pet_stats[upgrade]["hp"] += all_pet_stats[upgrade]["rarity"]
                     
             else:
                 reason = "Not enough Money"
@@ -131,8 +132,10 @@ def buy_item(item_id):
                 money -= 10
                 legendary_upgrade_pack -= 1
                 upgrade = random.choice(Inventory_raw)
-                if upgrade in pet_levels:
-                    pet_levels_specific_user[upgrade] += 5
+                if upgrade in pet_levels and upgrade in all_pet_stats:
+                    pet_levels[upgrade] += 5
+                    all_pet_stats[upgrade]["attack"] += all_pet_stats[upgrade]["rarity"] * 5 
+                    all_pet_stats[upgrade]["hp"] += all_pet_stats[upgrade]["rarity"] * 5
                     
             else:
                 reason = "Not enough Money"
@@ -156,6 +159,10 @@ def buy_item(item_id):
                         pet = random.choice(legendary_pets)
                         Inventory_raw.append(pet)
                         legendary_pets.remove(pet)
+                        message = f"You have got a legendary {pet}."
+                        send_update('user_message', {
+                        'message': message
+                        })  
                         print(f"You have got a legendary {pet}.")
                         
                 elif chance <= 25:  # 20% Rare 
@@ -163,16 +170,27 @@ def buy_item(item_id):
                         pet = random.choice(rare_pets)
                         Inventory_raw.append(pet)
                         rare_pets.remove(pet)
-                        print(f"You have got a rare {pet}.")
+                        message = f"You have got a rare {pet}."
+                        send_update('user_message', {
+                        'message': message
+                        })
+
+                        
                         
                 else:  # 75% Common 
                     if common_pets:
                         pet = random.choice(common_pets)
                         Inventory_raw.append(pet)
                         common_pets.remove(pet)
-                        print(f"You have got a common {pet}.")
+                        message = f"You have got a common {pet}."
+                        send_update('user_message', {
+                        'message': message
+                        }) 
                     else:
-                        print("No common pets available.")
+                        reason = "No Common Pets available"
+                        send_update('user_message', {
+                        'not_buy_reason': reason
+                        }) 
                 
                 
                     
