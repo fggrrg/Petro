@@ -55,7 +55,8 @@ def save_game_state():
         "userId": user_id,
         "money": money,
         "stage": stage,
-        "inventory": Inventory_finish
+        "inventory": Inventory_finish,
+        "pet_stats": all_pet_stats,
     }
     try:
         requests.post(f"{API_URL}/game/save", json=payload, timeout=3)
@@ -103,7 +104,7 @@ def get_shop_data():
 
 
 def buy_item(item_id):
-    global money, upgrade_pack, Inventory_raw, pet_levels, Inventory_finish, legendary_upgrade_pack, upgrade
+    global money, upgrade_pack, Inventory_raw, pet_levels, Inventory_finish, legendary_upgrade_pack, upgrade, common_pets, rare_pets, legendary_pets, charakter_pack, buff_pack, all_pet_stats
     user_Request_Pack_bought = json.loads(sys.stdin.readline().strip()).get('data', {}).get('endRound', '')  # placeholder
     if user_Request_Pack_bought == "Upgrade_Pack":
         if upgrade_pack > 0:
@@ -204,7 +205,28 @@ def buy_item(item_id):
             send_update('user_message', {
             'not_buy_reason': reason
             }) 
-    
+
+    elif user_Request_Pack_bought == "Buff_Pack":
+        if buff_pack > 0:
+            if money > 3:
+                money -= 4
+                buff_pack -= 1
+                Buff = random.randint(1, 5)
+
+                
+                
+                
+                    
+            else:
+                reason = "Not enough Money"
+                send_update('user_message', {
+                'not_buy_reason': reason
+                })
+        else:
+            reason = "Not on Stock"
+            send_update('user_message', {
+            'not_buy_reason': reason
+            }) 
 
 
 def send_initial_game_state():
