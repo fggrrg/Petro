@@ -206,12 +206,115 @@ def buy_item(item_id):
             'not_buy_reason': reason
             }) 
 
-    elif user_Request_Pack_bought == "Buff_Pack":
+    elif user_Request_Pack_bought == "buff_pack":
         if buff_pack > 0:
             if money > 3:
                 money -= 4
                 buff_pack -= 1
-                Buff = random.randint(1, 5)
+                available_buffs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+                selected_buffs = random.sample(available_buffs, 3)
+                buff_descriptions = {
+                1: "+1 Attack for all Pets in Inventory",
+                2: "+1 HP for all Pets in Inventory", 
+                3: "+2% Dodge Chance for all Pets in Inventory",
+                4: "+2 Attack for all Common Pets in Inventory",
+                5: "+2 HP for all Common Pets in Inventory",
+                6: "+3 Attack for all rare Pets in Inventory",
+                7: "+3 hp for all rare Pets in Inventory",
+                8: "+5 Attack for all Legandary Pets in Inventory",
+                9: "+5 hp for all Legandary Pets in Inventory",
+                10: "1 money for every Pet in Inventory",
+                11: "+2 Money for every common and -1 for each rare in Inventory",
+                12: "dubble the money you have",
+                13: "+1 Level for all Pets in Inventory",
+
+
+            }
+            
+
+            send_update('Buff_Selection', {
+                'Buff_1': buff_descriptions[selected_buffs[0]],
+                'Buff_2': buff_descriptions[selected_buffs[1]],
+                'Buff_3': buff_descriptions[selected_buffs[2]]
+
+                })
+            user_Request_selected_Buff = json.loads(sys.stdin.readline().strip()).get('data', {}).get('endRound', '')  # placeholder
+            while True:
+                choice = user_Request_selected_Buff
+                if choice in ["1", "2", "3"]:
+                    chosen_buff = selected_buffs[int(choice) - 1]
+                    break
+                
+                    
+            
+            
+            if chosen_buff == 1:
+                #("You have chosen: +1 Attack for all Pets")
+                for pet in Inventory_raw:
+                    all_pet_stats[pet]["attack"] += 1
+            elif chosen_buff == 2:
+                #("You have chosen: +1 HP for all Pets")
+                for pet in Inventory_raw:
+                    all_pet_stats[pet]["hp"] += 1
+            elif chosen_buff == 3:
+                #("You have chosen: +2% Dodge Chance for all Pets")
+                for pet in Inventory_raw:
+                    all_pet_stats[pet]["dodge_chance"] += 2
+            elif chosen_buff == 4:
+                #("You have chosen: +2 Attack for all Common Pets")
+                for pet in Inventory_raw:
+                    if pet in common_pets:
+                        all_pet_stats[pet]["attack"] += 2
+            elif chosen_buff == 5:
+                #("You have chosen: +2 HP for all Common Pets")
+                for pet in Inventory_raw:
+                    if pet in common_pets:
+                        all_pet_stats[pet]["hp"] += 2
+            elif chosen_buff == 6:
+                #("You have chosen: +3 Attack for all Rare Pets")
+                for pet in Inventory_raw:
+                    if pet in rare_pets:
+                        all_pet_stats[pet]["attack"] += 3
+            elif chosen_buff == 7:
+                #("You have chosen: +3 HP for all Rare Pets")
+                for pet in Inventory_raw:
+                    if pet in rare_pets:
+                        all_pet_stats[pet]["hp"] += 3
+            elif chosen_buff == 8:
+                #("You have chosen: +5 Attack for all Legendary Pets")
+                for pet in Inventory_raw:
+                    if pet in legendary_pets:
+                        all_pet_stats[pet]["attack"] += 5
+            elif chosen_buff == 9:
+                #("You have chosen: +5 HP for all Legendary Pets")
+                for pet in Inventory_raw:
+                    if pet in legendary_pets:
+                        all_pet_stats[pet]["hp"] += 5
+            elif chosen_buff == 10:
+                #("You have chosen: +1 Money for every Pet in Inventory")
+                money_1 = len(Inventory_raw)
+                print(f"You have got {money_1} Money")
+                money += money_1
+            elif chosen_buff == 11:
+                #("You have chosen: +2 Money for every Common Pet and -1 for each Rare Pet in Inventory")
+                money_2 = sum(2 for pet in Inventory_raw if pet in common_pets) - sum(1 for pet in Inventory_raw if pet in rare_pets)
+                print(f"You have got {money_2} Money")  
+                money += money_2
+            elif chosen_buff == 12:
+                #("You have chosen: Dubble the Money you have (Max. 25)")
+                if money * 2 <= 25:
+                    money *= 2
+                    print(f"You have got {money/2} Money")
+                else:
+                    print("You have got 25 Money")
+                    money += 25
+            elif chosen_buff == 13:
+                #("You have chosen: +1 Level for all Pets in Inventory")
+                for pet in Inventory_raw:
+                    if pet in pet_levels:
+                        pet_levels[pet] += 1
+                        all_pet_stats[pet]["attack"] += all_pet_stats[pet]["rarity"]
+                        all_pet_stats[pet]["hp"] += all_pet_stats[pet]["rarity"]
 
                 
                 
