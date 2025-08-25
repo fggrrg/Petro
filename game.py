@@ -293,20 +293,26 @@ def buy_item(item_id):
             elif chosen_buff == 10:
                 #("You have chosen: +1 Money for every Pet in Inventory")
                 money_1 = len(Inventory_raw)
-                print(f"You have got {money_1} Money")
+        
                 money += money_1
             elif chosen_buff == 11:
                 #("You have chosen: +2 Money for every Common Pet and -1 for each Rare Pet in Inventory")
-                money_2 = sum(2 for pet in Inventory_raw if pet in common_pets) - sum(1 for pet in Inventory_raw if pet in rare_pets)
-                print(f"You have got {money_2} Money")  
+                for pet in Inventory_raw:
+                    if all_pet_stats[pet]["rarity"] ==  1:  
+                        money_2 += 2    
+                    elif all_pet_stats[pet]["rarity"] == 2:  
+                        money_2 -= 1 
+                    else:
+                        money_2 += 0
+                 
                 money += money_2
             elif chosen_buff == 12:
                 #("You have chosen: Dubble the Money you have (Max. 25)")
                 if money * 2 <= 25:
                     money *= 2
-                    print(f"You have got {money/2} Money")
+                    
                 else:
-                    print("You have got 25 Money")
+                    
                     money += 25
             elif chosen_buff == 13:
                 #("You have chosen: +1 Level for all Pets in Inventory")
