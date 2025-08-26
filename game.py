@@ -17,7 +17,7 @@ money = 50
 stage = 1
 Inventory_raw = ["Worm"]
 Inventory_finish = []
-tss = 1.5                               # wartezeit zwischen nachricht und hauptmenu
+                              # wartezeit zwischen nachricht und hauptmenu
 reroll_shop = 5
 legendary_pets = legendary_p
 rare_pets = rare_p
