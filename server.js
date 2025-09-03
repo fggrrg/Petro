@@ -69,24 +69,43 @@ class Game {
         this.id = id;
         this.players = [player1, player2];
         this.pythonProcess = null;
+        this.messageBuffer = '';
+        this.isActive = true;
         this.startGame();
     }
 
     startGame() {
         console.log(`[GAME ${this.id}] Starting Python game process for players ${this.players[0].id} and ${this.players[1].id}`);
         
-        // Start Python subprocess
-        this.pythonProcess = spawn('python', ['game.py', this.id.toString()]);
+        // Start Python subprocess with unbuffered output
+        this.pythonProcess = spawn('python', ['-u', 'game.py', this.id.toString()], {
+            stdio: ['pipe', 'pipe', 'pipe']
+        });
         
+        // Handle stdout (game messages)
         this.pythonProcess.stdout.on('data', (data) => {
-            const message = data.toString().trim();
-            if (message) {
-                this.handlePythonMessage(message);
+            this.messageBuffer += data.toString();
+            const lines = this.messageBuffer.split('\n');
+            this.messageBuffer = lines.pop(); // Keep incomplete line in buffer
+            
+            for (const line of lines) {
+                if (line.trim()) {
+                    this.handlePythonMessage(line.trim());
+                }
             }
         });
 
+        // Handle stderr (debug output)
         this.pythonProcess.stderr.on('data', (data) => {
-            console.error(`[GAME ${this.id}] Python error:`, data.toString());
+            const message = data.toString().trim();
+            if (message) {
+                console.log(`[GAME ${this.id}] Python debug:`, message);
+            }
+        });
+
+        this.pythonProcess.on('error', (error) => {
+            console.error(`[GAME ${this.id}] Failed to start Python process:`, error.message);
+            this.cleanup();
         });
 
         this.pythonProcess.on('close', (code) => {
@@ -95,11 +114,14 @@ class Game {
         });
 
         // Send initial game state to Python
-        const initData = {
-            type: 'init',
-            players: this.players.map(p => ({ id: p.id }))
-        };
-        this.sendToPython(initData);
+        setTimeout(() => {
+            const initData = {
+                type: 'init',
+                players: this.players.map(p => ({ id: p.id }))
+            };
+            console.log(`[GAME ${this.id}] Sending init to Python:`, JSON.stringify(initData));
+            this.sendToPython(initData);
+        }, 100);
 
         // Notify players that game has started
         this.players.forEach((player, index) => {
@@ -109,6 +131,7 @@ class Game {
                 playerId: player.id,
                 opponentId: this.players[1 - index].id
             };
+            console.log(`[GAME ${this.id}] Sending gameStart to player ${player.id}`);
             this.sendToPlayer(player, gameStartData);
         });
     }
@@ -117,22 +140,34 @@ class Game {
         try {
             const data = JSON.parse(message);
             
-            // Broadcast game state to all players in this game
+            // Log what we receive from Python
             if (data.type === 'gameState') {
+                console.log(`[GAME ${this.id}] Received gameState from Python with ${data.players?.length || 0} players`);
+                
+                // Broadcast game state to all players in this game
                 this.players.forEach(player => {
                     if (player.ws.readyState === WebSocket.OPEN) {
                         player.ws.send(JSON.stringify(data));
                     }
                 });
+            } else {
+                console.log(`[GAME ${this.id}] Received from Python:`, data.type);
             }
         } catch (err) {
             console.error(`[GAME ${this.id}] Error parsing Python message:`, err.message);
+            console.error(`[GAME ${this.id}] Raw message:`, message);
         }
     }
 
     sendToPython(data) {
-        if (this.pythonProcess && !this.pythonProcess.killed) {
-            this.pythonProcess.stdin.write(JSON.stringify(data) + '\n');
+        if (this.pythonProcess && !this.pythonProcess.killed && this.isActive) {
+            try {
+                const message = JSON.stringify(data) + '\n';
+                this.pythonProcess.stdin.write(message);
+                console.log(`[GAME ${this.id}] Sent to Python:`, data.type, data.playerId || '');
+            } catch (err) {
+                console.error(`[GAME ${this.id}] Error sending to Python:`, err.message);
+            }
         }
     }
 
@@ -144,6 +179,7 @@ class Game {
 
     handlePlayerMessage(playerId, message) {
         // Forward player input to Python game process
+        console.log(`[GAME ${this.id}] Player ${playerId} input:`, message.type);
         const data = {
             ...message,
             playerId: playerId,
@@ -176,11 +212,14 @@ class Game {
     }
 
     cleanup() {
+        if (!this.isActive) return;
+        this.isActive = false;
+        
         console.log(`[GAME ${this.id}] Cleaning up game`);
         
         // Kill Python process if still running
         if (this.pythonProcess && !this.pythonProcess.killed) {
-            this.pythonProcess.kill();
+            this.pythonProcess.kill('SIGTERM');
         }
 
         // Move players back to waiting or disconnect them
@@ -289,7 +328,7 @@ wss.on('connection', (ws, req) => {
             // If player is in a game, forward to game handler
             if (player.gameId !== null) {
                 const game = activeGames.get(player.gameId);
-                if (game) {
+                if (game && game.isActive) {
                     game.handlePlayerMessage(playerId, data);
                 }
             }
@@ -317,7 +356,7 @@ wss.on('connection', (ws, req) => {
         // Remove from game if in one
         if (player.gameId !== null) {
             const game = activeGames.get(player.gameId);
-            if (game) {
+            if (game && game.isActive) {
                 game.removePlayer(playerId);
             }
         }
