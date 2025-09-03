@@ -3,10 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple HTML Website</title>
+    <title>Multiplayer Game</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Hello, World!</h1>
-    <p>This is a simple HTML website.</p>
+    <div id="info">
+        <h2>Multiplayer Game</h2>
+        <p>Use WASD to move your green player</p>
+        <p id="status">Connecting...</p>
+        <p id="playerCount">Players online: 0</p>
+    </div>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <div id="debug"></div>
+
+    <script src="script.js"></script>
 </body>
 </html>
