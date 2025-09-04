@@ -3,15 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multiplayer Game</title>
+    <title>Treasure Heist Game</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="info">
-        <h2>Multiplayer Game</h2>
-        <p>Use WASD to move your green player</p>
+        <h2>Treasure Heist</h2>
+        <p>WASD: Move | E: Interact | Click: Shoot</p>
         <p id="status">Connecting...</p>
         <p id="playerCount">Players online: 0</p>
+        <div id="instructions">
+            <small>
+                🎯 Shoot enemies to deal damage (100 HP)<br>
+                📦 Open chest when active (3s hold)<br>
+                💰 Deliver treasure to cashout zone<br>
+                ⏱️ Defend for 60s or steal in 7s to win!
+            </small>
+        </div>
     </div>
     <canvas id="gameCanvas" width="800" height="600"></canvas>
     <div id="debug"></div>
