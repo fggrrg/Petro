@@ -1,6 +1,5 @@
 # How it works
 
-## Architecture Overview
 
 The system has three main components:
 1. **Browser Client** (`script.js`) - Game UI and player input
