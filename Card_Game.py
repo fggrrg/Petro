@@ -22,359 +22,272 @@ buff_pack = roll_packs(10, 2)                      # 2.5 packs pro shop
     
 
 def Fight():
-    dubble_check = input("You are fighting on stage "+ str(stage)+". Are you sure you want to fight? N/Y")
-    if dubble_check == "wo bist du":
-        print("yea")
-    else:
-        main_menu()
+    dubble_check = input("You are fighting on stage "+ str(stage)+". Are you sure you want to fight? N/Y ").strip().lower()
+    if dubble_check == "y":
+        print("Fighting is not implemented yet.")
+        time.sleep(tss)
 
 def Inventory_function():
+    global money
     print("Your Inventory:")
     print(", ".join([f"{pet} (Lv.{pet_levels.get(pet, 1)})" for pet in Inventory]))
     print("Do you want to sell any Pet? Type: 'sell Petname' or just 'Petname' to see stats")
     user_Request = input().strip()
 
     if user_Request.startswith("sell "):
-        # Extrahiere den Pet-Namen nach "sell "
         pet_to_sell = user_Request[5:].strip()
-        if pet_to_sell in Inventory:
-            sell_price = all_pet_stats[pet_to_sell]["rarity"] * 2
-            sell_price += pet_levels.get(pet_to_sell, 1)  # Füge Level-basierten Wert hinzu
-            confirm = input(f"Are you sure you want to sell {pet_to_sell} for {sell_price}$? (Y/N): ").lower()
-            
+        if pet_to_sell not in Inventory:
+            print(f"You don't own {pet_to_sell}.")
+            time.sleep(tss)
+            return
+        sell_price = all_pet_stats[pet_to_sell]["rarity"] * 2
+        sell_price += pet_levels.get(pet_to_sell, 1)
+        confirm = input(f"Are you sure you want to sell {pet_to_sell} for {sell_price}$? (Y/N): ").lower()
+        if confirm == 'y':
+            Inventory.remove(pet_to_sell)
+            s_rarity = all_pet_stats[pet_to_sell]["rarity"]
+            money += sell_price
+            if s_rarity == 3:
+                legendary_pets.append(pet_to_sell)
+            elif s_rarity == 2:
+                rare_pets.append(pet_to_sell)
+            elif s_rarity == 1:
+                common_pets.append(pet_to_sell)
+            if pet_to_sell in pet_levels:
+                pet_levels[pet_to_sell] = 1
+            print(f"You have sold {pet_to_sell} for {sell_price}$.")
+        else:
+            print("Sale cancelled.")
+        time.sleep(tss)
 
     elif user_Request in Inventory:
-        # Zeige nur die Stats ohne zu verkaufen
         print(all_pet_stats[user_Request])
-        # Inventory_function()  # Falls diese Funktion existiert
+        input()
 
-    
-        if confirm == 'y':
-                Inventory.remove(pet_to_sell)
-                s_rarity = all_pet_stats[pet_to_sell]["rarity"]
-                money += sell_price
-                if s_rarity == 3:
-                    legendary_pets.append(pet_to_sell)
-                elif s_rarity == 2:
-                    rare_pets.append(pet_to_sell)
-                else:
-                    common_pets.append(pet_to_sell)
-                if pet_to_sell in pet_levels:
-                    pet_levels[pet_to_sell] = 1
-                print(f"You have sold {pet_to_sell} for {sell_price}$.")
+def upgrade_random_pet(levels):
+    upgrade = random.choice(Inventory)
+    pet_levels[upgrade] += levels
+    all_pet_stats[upgrade]["attack"] += all_pet_stats[upgrade]["rarity"] * levels
+    all_pet_stats[upgrade]["hp"] += all_pet_stats[upgrade]["rarity"] * levels
+    print(f"you have upgraded {upgrade} to Level {pet_levels[upgrade]}")
+
+def open_charakter_pack():
+    c_r_l = random.randint(0,100)
+    if c_r_l > 90 and rare_pets:
+        pool, rarity_name = rare_pets, "rare"
+    elif c_r_l < 5 and legendary_pets:
+        pool, rarity_name = legendary_pets, "legendary"
+    elif common_pets:
+        pool, rarity_name = common_pets, "common"
+    else:
+        print("You already own all common Pets")
+        return
+    r_p = random.choice(pool)
+    Inventory.append(r_p)
+    pool.remove(r_p)
+    print(f"You have got a {rarity_name} {r_p}.")
+
+def open_buff_pack():
+    global money
+    available_buffs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+    selected_buffs = random.sample(available_buffs, 3)
+    buff_descriptions = {
+        1: "+1 Attack for all Pets in Inventory",
+        2: "+1 HP for all Pets in Inventory",
+        3: "+2% Dodge Chance for all Pets in Inventory",
+        4: "+2 Attack for all Common Pets in Inventory",
+        5: "+2 HP for all Common Pets in Inventory",
+        6: "+3 Attack for all rare Pets in Inventory",
+        7: "+3 hp for all rare Pets in Inventory",
+        8: "+5 Attack for all Legandary Pets in Inventory",
+        9: "+5 hp for all Legandary Pets in Inventory",
+        10: "1 money for every Pet in Inventory",
+        11: "+2 Money for every common and -1 for each rare in Inventory",
+        12: "dubble the money you have (Max. +25)",
+        13: "+1 Level for all Pets in Inventory",
+    }
+
+    print("-------------------------------")
+    print("Choose one of these buffs:")
+    print(f"1) {buff_descriptions[selected_buffs[0]]}")
+    print(f"2) {buff_descriptions[selected_buffs[1]]}")
+    print(f"3) {buff_descriptions[selected_buffs[2]]}")
+
+    while True:
+        choice = input("Enter 1, 2, or 3: ")
+        if choice in ["1", "2", "3"]:
+            chosen_buff = selected_buffs[int(choice) - 1]
+            break
         else:
-                print("Sale cancelled.")
-        main_menu()
-    
+            print("Invalid choice! Enter 1, 2, or 3.")
+
+    def rarity(pet):
+        return all_pet_stats[pet]["rarity"]
+
+    print(f"You have chosen: {buff_descriptions[chosen_buff]}")
+    if chosen_buff == 1:
+        for pet in Inventory:
+            all_pet_stats[pet]["attack"] += 1
+    elif chosen_buff == 2:
+        for pet in Inventory:
+            all_pet_stats[pet]["hp"] += 1
+    elif chosen_buff == 3:
+        for pet in Inventory:
+            all_pet_stats[pet]["dodge_chance"] += 2
+    elif chosen_buff == 4:
+        for pet in Inventory:
+            if rarity(pet) == 1:
+                all_pet_stats[pet]["attack"] += 2
+    elif chosen_buff == 5:
+        for pet in Inventory:
+            if rarity(pet) == 1:
+                all_pet_stats[pet]["hp"] += 2
+    elif chosen_buff == 6:
+        for pet in Inventory:
+            if rarity(pet) == 2:
+                all_pet_stats[pet]["attack"] += 3
+    elif chosen_buff == 7:
+        for pet in Inventory:
+            if rarity(pet) == 2:
+                all_pet_stats[pet]["hp"] += 3
+    elif chosen_buff == 8:
+        for pet in Inventory:
+            if rarity(pet) == 3:
+                all_pet_stats[pet]["attack"] += 5
+    elif chosen_buff == 9:
+        for pet in Inventory:
+            if rarity(pet) == 3:
+                all_pet_stats[pet]["hp"] += 5
+    elif chosen_buff == 10:
+        money_1 = len(Inventory)
+        print(f"You have got {money_1} Money")
+        money += money_1
+    elif chosen_buff == 11:
+        money_2 = 0
+        for pet in Inventory:
+            if rarity(pet) == 1:
+                money_2 += 2
+            elif rarity(pet) == 2:
+                money_2 -= 1
+        print(f"You have got {money_2} Money")
+        money += money_2
+    elif chosen_buff == 12:
+        bonus = min(money, 25)
+        money += bonus
+        print(f"You have got {bonus} Money")
+    elif chosen_buff == 13:
+        for pet in Inventory:
+            pet_levels[pet] += 1
+            all_pet_stats[pet]["attack"] += rarity(pet)
+            all_pet_stats[pet]["hp"] += rarity(pet)
+
+def buy(stock, price):
+    if stock <= 0:
+        print("not on Stock")
+    elif money < price:
+        print("not enough Money")
+    else:
+        return True
+    time.sleep(tss)
+    return False
+
 def shop():
-    global money, upgrade_pack, buff_pack, charakter_pack, legendary_upgrade_pack, shop_refresh_price, r_p
-    liness = [
-    "-------------Shop-------------",
-    "Money:"+str(money)+"$",
-    "",
-    "  "+str(upgrade_pack)+" Upgrade Pack (UP) available                   3$",
-    "  "+str(buff_pack)+" Buff Pack (BP) available                      4$",
-    "  "+str(charakter_pack)+" Charakter Pack (CP) available                 8$",
-    "  "+str(legendary_upgrade_pack)+" Legendary Upgrade Pack (LUP) available        10$",
-    " ♾️  Reroll Shop(RS)                               "+str(shop_refresh_price)+"$                         ",
-    ]
-    for line in liness:
-        print(line)
-        time.sleep(0.03)
-    user_request = input("1, 2,3, 4, r or Main Menu?: ").lower()
-    if user_request == "m":
-        main_menu()
-    elif user_request == "up":
-        if upgrade_pack > 0:
-            if money > 2:
+    global money, upgrade_pack, buff_pack, charakter_pack, legendary_upgrade_pack, shop_refresh_price
+    while True:
+        liness = [
+        "-------------Shop-------------",
+        "Money:"+str(money)+"$",
+        "",
+        "  "+str(upgrade_pack)+" Upgrade Pack (UP) available                   3$",
+        "  "+str(buff_pack)+" Buff Pack (BP) available                      4$",
+        "  "+str(charakter_pack)+" Charakter Pack (CP) available                 8$",
+        "  "+str(legendary_upgrade_pack)+" Legendary Upgrade Pack (LUP) available        10$",
+        " ♾️  Reroll Shop(RS)                               "+str(shop_refresh_price)+"$                         ",
+        ]
+        for line in liness:
+            print(line)
+            time.sleep(0.03)
+        user_request = input("UP, BP, CP, LUP, R or M (Main Menu)?: ").strip().lower()
+        if user_request == "m":
+            return
+        elif user_request == "up":
+            if not Inventory:
+                print("You have no Pets to upgrade")
+                time.sleep(tss)
+            elif buy(upgrade_pack, 3):
                 money -= 3
                 upgrade_pack -= 1
-                upgrade = random.choice(Inventory)
-                if upgrade in pet_levels:
-                    pet_levels[upgrade] += 1
-                    if upgrade in all_pet_stats:
-                        all_pet_stats[upgrade]["attack"] += all_pet_stats[upgrade]["rarity"] 
-                        all_pet_stats[upgrade]["hp"] += all_pet_stats[upgrade]["rarity"] 
-                    print(f"you have upgraded {upgrade} to Level {pet_levels[upgrade]}")
-                wait = input()
-                shop()
-            else:
-                print("not enough Money")
-                time.sleep(tss)
-                shop()
-        else:
-            print("not on Stock")
-            time.sleep(tss)
-            
-        shop()
-
-    
-    elif user_request == "cp":  
-        if charakter_pack > 0:
-            if money > 7:
+                upgrade_random_pet(1)
+                input()
+        elif user_request == "cp":
+            if buy(charakter_pack, 8):
                 money -= 8
                 charakter_pack -= 1
-                c_r_l = random.randint(0,100)
-                if c_r_l > 90:
-                    r_p = random.choice(rare_pets)
-                    Inventory.append(r_p)
-                    rare_pets.remove(r_p)
-                    print(f"You have got a rare {r_p}.")
-                    wait = input("")
-                elif c_r_l < 5:
-                    r_p = random.choice(legendary_pets)
-                    Inventory.append(r_p)
-                    legendary_pets.remove(r_p)
-                    print(f"You have got a legendary {r_p}.")
-                    wait = input("")
-                else:
-                    if len(common_pets) > 0:
-                        r_p = random.choice(common_pets)
-                        Inventory.append(r_p)
-                        common_pets.remove(r_p)
-                        print(f"You have got a common {r_p}.")
-                    else:
-                        print(f"You already own all 20 common Pets")
-                    wait = input("")
-                shop()
-            else:
-                print("not enough Money")
+                open_charakter_pack()
+                input()
+        elif user_request == "lup":
+            if not Inventory:
+                print("You have no Pets to upgrade")
                 time.sleep(tss)
-                shop()
-        else:
-            print("not on Stock")
-            time.sleep(tss)
-        shop()
-        
-    elif user_request == "lup":
-        if legendary_upgrade_pack > 0:
-            if money > 9:
+            elif buy(legendary_upgrade_pack, 10):
                 money -= 10
                 legendary_upgrade_pack -= 1
-                upgrade = random.choice(Inventory)
-                if upgrade in pet_levels:
-                    pet_levels[upgrade] += 5
-                    if upgrade in all_pet_stats:
-                        all_pet_stats[upgrade]["attack"] += all_pet_stats[upgrade]["rarity"] * 5 
-                        all_pet_stats[upgrade]["hp"] += all_pet_stats[upgrade]["rarity"] * 5
-
-                    
-                    print(f"you have upgraded {upgrade} to Level {pet_levels[upgrade]}")
-                wait = input()
-                shop()
-            else:
-                print("not enough Money")
-                time.sleep(tss)
-                shop()
-        else:
-            print("not on Stock")
-            time.sleep(tss)
-
-    elif user_request == "bp":
-        if buff_pack > 0:
-            if money > 3:
+                upgrade_random_pet(5)
+                input()
+        elif user_request == "bp":
+            if buy(buff_pack, 4):
                 money -= 4
                 buff_pack -= 1
-                available_buffs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
-                selected_buffs = random.sample(available_buffs, 3)
-                buff_descriptions = {
-                1: "+1 Attack for all Pets in Inventory",
-                2: "+1 HP for all Pets in Inventory", 
-                3: "+2% Dodge Chance for all Pets in Inventory",
-                4: "+2 Attack for all Common Pets in Inventory",
-                5: "+2 HP for all Common Pets in Inventory",
-                6: "+3 Attack for all rare Pets in Inventory",
-                7: "+3 hp for all rare Pets in Inventory",
-                8: "+5 Attack for all Legandary Pets in Inventory",
-                9: "+5 hp for all Legandary Pets in Inventory",
-                10: "1 money for every Pet in Inventory",
-                11: "+2 Money for every common and -1 for each rare in Inventory",
-                12: "dubble the money you have",
-                13: "+1 Level for all Pets in Inventory",
-
-
-            }
-            
-            print("-------------------------------")
-            print("Choose one of these buffs:")
-            print(f"1) {buff_descriptions[selected_buffs[0]]}")
-            print(f"2) {buff_descriptions[selected_buffs[1]]}")
-            print(f"3) {buff_descriptions[selected_buffs[2]]}")
-            
-            
-            while True:
-                choice = input("Enter 1, 2, or 3: ")
-                if choice in ["1", "2", "3"]:
-                    chosen_buff = selected_buffs[int(choice) - 1]
-                    break
-                else:
-                    print("Invalid choice! Enter 1, 2, or 3.")
-            money_1 = 0
-            money_2 = 0 
-            if chosen_buff == 1:
-                print("You have chosen: +1 Attack for all Pets")
-                for pet in Inventory:
-                    all_pet_stats[pet]["attack"] += 1
-            elif chosen_buff == 2:
-                print("You have chosen: +1 HP for all Pets")
-                for pet in Inventory:
-                    all_pet_stats[pet]["hp"] += 1
-            elif chosen_buff == 3:
-                print("You have chosen: +2% Dodge Chance for all Pets")
-                for pet in Inventory:
-                    all_pet_stats[pet]["dodge_chance"] += 2
-            elif chosen_buff == 4:
-                print("You have chosen: +2 Attack for all Common Pets")
-                for pet in Inventory:
-                    if pet in common_pets:
-                        all_pet_stats[pet]["attack"] += 2
-            elif chosen_buff == 5:
-                print("You have chosen: +2 HP for all Common Pets")
-                for pet in Inventory:
-                    if pet in common_pets:
-                        all_pet_stats[pet]["hp"] += 2
-            elif chosen_buff == 6:
-                print("You have chosen: +3 Attack for all Rare Pets")
-                for pet in Inventory:
-                    if pet in rare_pets:
-                        all_pet_stats[pet]["attack"] += 3
-            elif chosen_buff == 7:
-                print("You have chosen: +3 HP for all Rare Pets")
-                for pet in Inventory:
-                    if pet in rare_pets:
-                        all_pet_stats[pet]["hp"] += 3
-            elif chosen_buff == 8:
-                print("You have chosen: +5 Attack for all Legendary Pets")
-                for pet in Inventory:
-                    if pet in legendary_pets:
-                        all_pet_stats[pet]["attack"] += 5
-            elif chosen_buff == 9:
-                print("You have chosen: +5 HP for all Legendary Pets")
-                for pet in Inventory:
-                    if pet in legendary_pets:
-                        all_pet_stats[pet]["hp"] += 5
-            elif chosen_buff == 10:
-                print("You have chosen: +1 Money for every Pet in Inventory")
-                money_1 = len(Inventory)
-                print(f"You have got {money_1} Money")
-                money += money_1
-            elif chosen_buff == 11:
-                print("You have chosen: +2 Money for every Common Pet and -1 for each Rare Pet in Inventory")
-                for pet in Inventory:
-                    if all_pet_stats[pet]["rarity"] ==  1:  
-                        money_2 += 2    
-                    elif all_pet_stats[pet]["rarity"] == 2:  
-                        money_2 -= 1 
-                    else:
-                        money_2 += 0
-                print(f"You have got {money_2} Money")  
-                money += money_2
-            elif chosen_buff == 12:
-                print("You have chosen: Dubble the Money you have (Max. 25)")
-                if money * 2 <= 25:
-                    money *= 2
-                    print(f"You have got {money/2} Money")
-                else:
-                    print("You have got 25 Money")
-                    money += 25
-            elif chosen_buff == 13:
-                print("You have chosen: +1 Level for all Pets in Inventory")
-                for pet in Inventory:
-                    if pet in pet_levels:
-                        pet_levels[pet] += 1
-                        all_pet_stats[pet]["attack"] += all_pet_stats[pet]["rarity"]
-                        all_pet_stats[pet]["hp"] += all_pet_stats[pet]["rarity"]
-            
-
-            
-                
+                open_buff_pack()
                 time.sleep(1)
-                shop()
-      
-
-            
+        elif user_request in ("r", "rs"):
+            if money >= shop_refresh_price:
+                money -= shop_refresh_price
+                shop_refresh_price += 1
+                upgrade_pack = roll_packs(5, 2)
+                legendary_upgrade_pack = roll_packs(5, 20)
+                charakter_pack = roll_packs(1, 3)
+                buff_pack = roll_packs(5, 2)
             else:
-                    print("not enough Money")
-                    time.sleep(tss)
-                    shop()
-        else:
-            print("not on Stock")
-            time.sleep(tss)
-
-
-
-
-
-
-
-
-
-            
-        shop()
-    elif user_request == "r":
-        if money > shop_refresh_price - 1:
-            money -= shop_refresh_price
-            shop_refresh_price += 1
-            
-
-            upgrade_pack = roll_packs(5, 2)                 # durschnittlich 2.5 packs pro shop
-            legendary_upgrade_pack = roll_packs(5, 20)       # 0.25 also alle 4 shops
-            charakter_pack = roll_packs(1, 3)               # 0.3 alle 3 shops
-            buff_pack = roll_packs(5, 2)                      # 2.5 packs pro shop
-            
-            shop()
-    
-        else:
-            print("not enough money")
-            time.sleep(tss)
-            shop()
-    elif user_request == "e":
-        exit()
-    else:
-        shop()
+                print("not enough money")
+                time.sleep(tss)
+        elif user_request == "e":
+            exit()
 
 
 def main_menu():
-    
-    global money
+    while True:
+        lines = [
+            "------------------------------",
+            "Your Inventory:",
+            ",".join(Inventory),
+            "------------------------------",
+            "Money:"+str(money)+"$",
+            "------------------------------",
+            "Main Menu:",
+            "I Inventory",
+            "F Fight",
+            "S Shop"
+        ]
 
-    
-    
+        for line in lines:
+            print(line)
+            time.sleep(0.02)
 
-   
-    lines = [
-        "------------------------------",
-        "Your Inventory:",
-        ",".join(Inventory),
-        "------------------------------",
-        "Money:"+str(money)+"$",
-        "------------------------------",
-        "Main Menu:",
-        "I Inventory",
-        "F Fight",
-        "S Shop"
-    ]
-    
-    for line in lines:
-        print(line)
-        time.sleep(0.02)  
-    
-    user_Request = input("").lower()
-    
-    print("------------------------------")
-    
-    if user_Request == "i":
-       Inventory_function()
-    elif user_Request == "f":
-        Fight()
-    elif user_Request == "s":
-        shop()
-    elif user_Request == "esc" or "e":
-        exit()
-    else:
-        print("")
-        time.sleep(tss)
-        main_menu()
+        user_Request = input("").strip().lower()
+
+        print("------------------------------")
+
+        if user_Request == "i":
+            Inventory_function()
+        elif user_Request == "f":
+            Fight()
+        elif user_Request == "s":
+            shop()
+        elif user_Request in ("esc", "e"):
+            exit()
+        else:
+            time.sleep(tss)
 
 main_menu()
 
